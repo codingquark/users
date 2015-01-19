@@ -42,6 +42,11 @@ class UsersController extends Controller
                 );
             }
 
+            $adminRole = DB::table('roles')->where('name', '=', 'Admin')->pluck('id');
+            //$name = $user->username;
+            $user1 = User::where('username','=', $user->username)->first();
+            $user1->roles()->attach($adminRole);
+
             return Redirect::action('UsersController@login')
                 ->with('notice', Lang::get('confide::confide.alerts.account_created'));
         } else {
@@ -60,9 +65,12 @@ class UsersController extends Controller
      */
     public function login()
     {
-        if (Confide::user()) {
-            return Redirect::to('/');
-        } else {
+        if (Confide::user()->hasRole('Admin')) {
+            return Redirect::to('adminpanel/dashboard');
+        } elseif (Confide::user()->hasRole('User')) {
+            return Redirect::to('userpanel/dashboard');
+        }
+         else {
             return View::make(Config::get('confide::login_form'));
         }
     }
