@@ -88,3 +88,31 @@ Route::filter('csrf', function()
 		throw new Illuminate\Session\TokenMismatchException;
 	}
 });
+
+Route::filter('admin', function()
+{
+	$user = Auth::user();
+
+	if($user->hasRole('Admin'))
+	{
+		return;
+	}
+	else
+	{
+		return Redirect::to('/userpanel/dashboard');
+	}
+});
+
+/*Route::filter('user', function()
+{
+	$user = Auth::user();
+
+	if($user->hasRole('user'))
+	{
+		return;
+	}
+	else
+	{
+		return Redirect::to('/userpanel/dashboard');
+	}
+});*/

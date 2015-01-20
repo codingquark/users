@@ -43,7 +43,6 @@ class UsersController extends Controller
             }
 
             $adminRole = DB::table('roles')->where('name', '=', 'Admin')->pluck('id');
-            //$name = $user->username;
             $user1 = User::where('username','=', $user->username)->first();
             $user1->roles()->attach($adminRole);
 
@@ -65,12 +64,18 @@ class UsersController extends Controller
      */
     public function login()
     {
-        if (Confide::user()->hasRole('Admin')) {
-            return Redirect::to('adminpanel/dashboard');
-        } elseif (Confide::user()->hasRole('User')) {
-            return Redirect::to('userpanel/dashboard');
+        $user = Auth::user();
+        if(Confide::user())
+        {
+            if ($user->hasRole('Admin')) {
+                return Redirect::intended('/adminpanel/dashboard');
+            }
+            elseif ($user->hasRole('user')) {
+                return Redirect::intended('/userpanel/dashboard');
+            }
         }
-         else {
+         else 
+        {
             return View::make(Config::get('confide::login_form'));
         }
     }
@@ -86,7 +91,7 @@ class UsersController extends Controller
         $input = Input::all();
 
         if ($repo->login($input)) {
-            return Redirect::intended('/');
+            return Redirect::intended('dashboard');
         } else {
             if ($repo->isThrottled($input)) {
                 $err_msg = Lang::get('confide::confide.alerts.too_many_attempts');
@@ -200,6 +205,11 @@ class UsersController extends Controller
     {
         Confide::logout();
 
-        return Redirect::to('/');
+        return Redirect::to('/users/create');
+    }
+
+    private function adminpanel()
+    {
+        View::make('dashboard');
     }
 }

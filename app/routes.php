@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'UsersController@login');
+Route::get('/', 'UsersController@create');
 //
 
 // Confide routes
@@ -26,7 +26,9 @@ Route::get('users/reset_password/{token}', 'UsersController@resetPassword');
 Route::post('users/reset_password', 'UsersController@doResetPassword');
 Route::get('users/logout', 'UsersController@logout');
 
-Route::get('userpanel/dashboard', function(){ return View::make('userpanel.dashboard'); });
+Route::get('userpanel/dashboard', 'UsersController@adminpanel');
 Route::when('userpanel/*', 'auth');
 Route::get('adminpanel/dashboard', function(){ return View::make('adminpanel.dashboard'); });
-Route::when('adminpanel/*', 'auth');
+Route::when('adminpanel/*', 'admin');
+Route::get('dashboard', function() { return View::make('adminpanel.dashboard'); });
+Route::when('dashboard', 'admin');
