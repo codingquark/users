@@ -25,9 +25,13 @@ Route::post('users/forgot_password', 'UsersController@doForgotPassword');
 Route::get('users/reset_password/{token}', 'UsersController@resetPassword');
 Route::post('users/reset_password', 'UsersController@doResetPassword');
 Route::get('users/logout', 'UsersController@logout');
+Route::post('adduser', 'UsersController@adduser');
 
-Route::get('userpanel/dashboard', 'UsersController@adminpanel');
+Route::get('userpanel/dashboard', function() {
+	return View::make('userpanel.dashboard');
+});
 Route::when('userpanel/*', 'auth');
+
 Route::get('adminpanel/dashboard', function()
 	{ 
 		$users = User::all();
@@ -35,9 +39,3 @@ Route::get('adminpanel/dashboard', function()
 	});
 
 Route::when('adminpanel/*', 'admin');
-Route::get('dashboard', function() 
-	{ 
-		$users = User::all();
-		return View::make('adminpanel.dashboard', ['users' => $users]); 
-	});
-Route::when('dashboard', 'admin');
