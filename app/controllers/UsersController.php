@@ -70,7 +70,22 @@ class UsersController extends Controller
             if ($user->hasRole('Admin')) {
                 return Redirect::intended('/adminpanel/dashboard');
             }
-            elseif ($user->hasRole('user')) {
+            elseif ($user->hasRole('developer')) {
+                return Redirect::intended('/userpanel/dashboard');
+            }
+            elseif ($user->hasRole('tester')) {
+                return Redirect::intended('/userpanel/dashboard');
+            }
+            elseif ($user->hasRole('designer')) {
+                return Redirect::intended('/userpanel/dashboard');
+            }
+            elseif ($user->hasRole('illustrator')) {
+                return Redirect::intended('/userpanel/dashboard');
+            }
+            elseif ($user->hasRole('lead')) {
+                return Redirect::intended('/userpanel/dashboard');
+            }
+            elseif ($user->hasRole('manager')) {
                 return Redirect::intended('/userpanel/dashboard');
             }
         }
@@ -91,7 +106,7 @@ class UsersController extends Controller
         $input = Input::all();
 
         if ($repo->login($input)) {
-            return Redirect::intended('dashboard');
+            return Redirect::intended('/adminpanel/dashboard');
         } else {
             if ($repo->isThrottled($input)) {
                 $err_msg = Lang::get('confide::confide.alerts.too_many_attempts');
@@ -208,8 +223,41 @@ class UsersController extends Controller
         return Redirect::to('/users/create');
     }
 
-    private function adminpanel()
+    public function adduser()
     {
-        View::make('dashboard');
+        $repo = App::make('UserRepository');
+        $user = $repo->signup(Input::all());
+
+        if ($user->id) {
+            if (Config::get('confide::signup_email')) {
+                Mail::queueOn(
+                    Config::get('confide::email_queue'),
+                    Config::get('confide::email_account_confirmation'),
+                    compact('user'),
+                    function ($message) use ($user) {
+                        $message
+                            ->to($user->email, $user->username)
+                            ->subject(Lang::get('confide::confide.email.account_confirmation.subject'));
+                    }
+                );
+            }
+
+            $checkedRoles = array_get(Input::all(), 'chkRoles');
+            $user1 = User::where('username','=', $user->username)->first();
+
+            for($i = 0; $i < count($checkedRoles); $i++) {
+                //$adminRole = DB::table('roles')->where('id', '=', $thisRole)->pluck('id');
+                $user1->roles()->attach($checkedRoles[$i]);
+            }
+
+            return Redirect::action('UsersController@login')
+                ->with('notice', Lang::get('confide::confide.alerts.account_created'));
+        } else {
+            $error = $user->errors()->all(':message');
+
+            return Redirect::action('UsersController@create')
+                ->withInput(Input::except('password'))
+                ->with('error', $error);
+        }
     }
 }
