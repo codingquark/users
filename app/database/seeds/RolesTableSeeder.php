@@ -7,25 +7,58 @@ class RolesTableSeeder extends Seeder {
         DB::table('roles')->delete();
 
         $adminRole = new Role;
-        $adminRole->name = 'adminRole';
+        $adminRole->name = 'Admin';
         $adminRole->save();
 
         $standRole = new Role;
-        $standRole->name = 'userRole';
+        $standRole->name = 'user';
         $standRole->save();
 
-        $modRole = new Role;
-        $modRole->name = 'modRole';
-        $modRole->save();
+        $devRole = new Role;
+        $devRole->name = 'developer';
+        $devRole->save();
 
-        $user = User::where('username','=','admin')->first();
+        $designRole = new Role;
+        $designRole->name = 'designer';
+        $designRole->save();
+
+        $testRole = new Role;
+        $testRole->name = 'tester';
+        $testRole->save();
+
+        $illRole = new Role;
+        $illRole->name = 'illustrator';
+        $illRole->save();
+
+        $leadRole = new Role;
+        $leadRole->name = 'lead';
+        $leadRole->save();
+
+        $managerRole = new Role;
+        $managerRole->name = 'manager';
+        $managerRole->save();
+
+        $user = User::where('username','=','rushabh')->first();
         $user->attachRole( $adminRole );
 
-        $user = User::where('username','=','user')->first();
-        $user->attachRole( $standRole );
+        $user = User::where('username','=','jayesh')->first();
+        //$user->attachRole( $standRole );
+        $user->attachRole( $devRole );
+        $user->attachRole( $testRole );
 
-        $user = User::where('username','=','moderator')->first();
-        $user->attachRole( $modRole );
+        $user = User::where('username','=','rajesh')->first();
+        //$user->attachRole( $standRole );
+        $user->attachRole( $designRole );
+        $user->attachRole( $illRole );
+
+        $user = User::where('username','=','hemal')->first();
+        //$user->attachRole( $standRole );
+        $user->attachRole( $managerRole );
+
+        $user = User::where('username','=','komal')->first();
+        //$user->attachRole( $standRole );
+        $user->attachRole( $leadRole );
+        $user->attachRole( $managerRole );
 
     }
 }
