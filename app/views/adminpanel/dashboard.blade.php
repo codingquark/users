@@ -40,7 +40,6 @@
 		        </tbody>
 	    	</table>
 
-	    	{{-- Confide::user()->roles --}}
 	    	<a href="/users/logout">Logout</a>
 		</div>
 	</div>
