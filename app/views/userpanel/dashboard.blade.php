@@ -1,26 +1,30 @@
 @extends('master')
 
 @section('head')
-<style>
-        body { background-color: #EEE; }
-        .maincontent {
-            background-color: #FFF;
-            margin: 60px auto;
-            padding: 20px;
-            width: 300px;
-            box-shadow: 0 0 20px #AAA;
-        }
-    </style>
+@section('head')
+
+    <link rel="stylesheet" type="text/css" href="css/admindash.css">
+
+
+@stop
 
 @stop
 
 @section('content')
-<div class="maincontent">
-        <h1>{{ Confide::user()->username }}</h1>
-        <div class="well">
-            <b>email:</b> {{ Confide::user()->email }}
-            <br /> {{ Confide::user()->display(); }}
+<div class="container">
+        <div class="jumbotron">
+            <div class="well well-sm">
+                <a href="/users/logout">Logout</a>
+            </div>
+            <h2>Roles Assigned:</h2>
+            
+            @foreach(Confide::user()->roles as $role)
+
+                <h3><li>{{ $role->name }}</li></h3>
+
+            @endforeach
+
         </div>
-     </div>
+    </div>
 
 @stop
