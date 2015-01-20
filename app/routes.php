@@ -28,7 +28,16 @@ Route::get('users/logout', 'UsersController@logout');
 
 Route::get('userpanel/dashboard', 'UsersController@adminpanel');
 Route::when('userpanel/*', 'auth');
-Route::get('adminpanel/dashboard', function(){ return View::make('adminpanel.dashboard'); });
+Route::get('adminpanel/dashboard', function()
+	{ 
+		$users = User::all();
+		return View::make('adminpanel.dashboard', ['users' => $users]); 
+	});
+
 Route::when('adminpanel/*', 'admin');
-Route::get('dashboard', function() { return View::make('adminpanel.dashboard'); });
+Route::get('dashboard', function() 
+	{ 
+		$users = User::all();
+		return View::make('adminpanel.dashboard', ['users' => $users]); 
+	});
 Route::when('dashboard', 'admin');
